@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Online Tools – PrintHub</title>
+<style>
+body{margin:0;font-family:'Segoe UI',Tahoma,sans-serif;background:#f5f8f7;color:#1d2b27}
+header{background:#0f5c4a;color:#fff;padding:14px 18px;display:flex;gap:16px;align-items:center}
+header a{color:#fff;text-decoration:none;font-weight:700}
+main{max-width:1000px;margin:auto;padding:18px}
+.sq{width:100%;padding:13px;border:1px solid #ccd;border-radius:10px;font-size:16px;box-sizing:border-box}
+h3{margin:24px 0 10px;color:#0f5c4a}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.tc{background:#fff;border-radius:12px;padding:16px;text-decoration:none;color:inherit;box-shadow:0 3px 10px #0001;display:flex;flex-direction:column;gap:4px;border:1px solid #0000;transition:.2s}
+.tc:hover{border-color:#ff8a00;transform:translateY(-3px)}.tc span{font-size:30px}.tc small{color:#667}
+.tc em{font-style:normal;background:#e8f5f1;color:#0f5c4a;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;align-self:flex-start}
+.back{display:inline-block;margin-bottom:12px;color:#0f5c4a;font-weight:700;text-decoration:none}
+.panel{background:#fff;border-radius:14px;padding:22px;box-shadow:0 4px 14px #0001;max-width:620px;margin:auto}
+.panel h2{margin:0}.panel>p{color:#667;margin:4px 0 16px}
+label{display:block;font-size:13px;font-weight:600;margin:10px 0}
+input,select,textarea{width:100%;padding:10px;margin-top:4px;border:1px solid #ccd;border-radius:8px;font-size:15px;box-sizing:border-box;font-family:inherit}
+input[type=color]{height:42px;padding:3px}
+button,.btn{display:inline-block;background:#0f5c4a;color:#fff;border:none;padding:11px 20px;border-radius:8px;font-weight:700;cursor:pointer;margin:10px 8px 0 0;text-decoration:none;font-size:14px}
+.out{margin-top:14px;word-break:break-all}
+.r{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;background:#f1f7f5;border-radius:8px;margin:6px 0}
+.big{font-size:46px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;margin:10px 0}
+#ds{font-size:26px;text-align:right}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.k{margin:0;padding:16px;font-size:18px;background:#e8f5f1;color:#0f5c4a}
+</style></head><body>
+<header><a href="/">← Home</a><a href="#" style="margin-left:auto">🛠️ Free Tools</a></header>
+<main id="app"></main>
+<script src="tools-list.js"></script>
+<script>
+const $=s=>document.querySelector(s),V=i=>$('#'+i).value,N=i=>+V(i)||0;
+const L=(t,i,ty='text',v='',x='')=>`<label>${t}<input id="${i}" type="${ty}" value="${v}" ${x}></label>`;
+const S=(t,i,o)=>`<label>${t}<select id="${i}">${o.map(([v,n])=>`<option value="${v}">${n}</option>`).join('')}</select></label>`;
+const R=a=>a.map(([k,v])=>`<div class="r"><span>${k}</span><b>${v}</b></div>`).join('');
+const inr=n=>'₹'+(+n).toLocaleString('en-IN',{maximumFractionDigits:2});
+const today=new Date().toISOString().slice(0,10),OUT='<div id="o" class="out"></div>';
+const O=h=>{const e=$('#o');if(e)e.innerHTML=h};
+const live=f=>{$('#tb').oninput=f;f()};
+const js=u=>new Promise(r=>{if(document.querySelector(`script[src="${u}"]`))return r();const s=document.createElement('script');s.src=u;s.onload=r;document.head.appendChild(s)});
+const pr=(h,c='')=>{const w=window.open('');w.document.write(`<html><head><meta charset="utf-8"><style>body{font-family:sans-serif;padding:24px}${c}</style></head><body>${h}</body></html>`);w.document.close();setTimeout(()=>w.print(),500)};
+
+const gst=m=>({h:L('Amount (₹)','a','number','1000')+S('GST Rate','r',[[5,'5%'],[12,'12%'],[18,'18%'],[28,'28%']])+S('Mode','m',[[0,'GST jodein (Exclusive)'],[1,'GST nikalein (Inclusive)']])+OUT,
+ i(){$('#m').value=m;live(()=>{const a=N('a'),r=N('r'),b=V('m')=='1'?a*100/(100+r):a,g=b*r/100;O(R([['Base amount',inr(b)],['GST ('+r+'%)',inr(g)],['CGST',inr(g/2)],['SGST',inr(g/2)],['Total',inr(b+g)]]))})}});
+
+const CTL={
+ resize:L('Width px (0 = auto)','w','number','0')+L('Height px (0 = auto)','hh','number','0'),
+ blur:L('Blur (px)','bl','number','4'),
+ border:L('Border (px)','bw','number','20')+L('Color','bc','color','#ffffff'),
+ text:L('Text','tx','text','Name / Date')+L('Size (px)','ts','number','40')+L('Color','tc','color','#ffffff')+S('Position','tp',[['b','Neeche'],['t','Upar'],['c','Beech me']]),
+ watermark:L('Watermark text','tx','text','PrintHub')+L('Opacity (0-1)','wo','number','0.3','step="0.1"')
+};
+const lab=m=>({h:L('Photo chunein','f','file','','accept="image/*"')+(CTL[m]||'')+S('Format','fm',[['image/jpeg','JPG'],['image/png','PNG'],['image/webp','WebP']])+L('Quality (10-100)','q','number','85')+L('Max size KB (optional)','kb','number','')+'<canvas id="cv" style="max-width:100%;margin-top:12px"></canvas><br><a id="dl" class="btn" download="photo.jpg">⬇ Download</a>'+OUT,
+ i(){let im;O('Pehle photo chunein');
+ const draw=()=>{if(!im)return;let w=im.width,h=im.height;
+  if(m=='resize'){const W=N('w'),H=N('hh');if(W&&H){w=W;h=H}else if(W){h=Math.round(h*W/w);w=W}else if(H){w=Math.round(w*H/h);h=H}}
+  const b=m=='border'?N('bw'):0,c=$('#cv'),x=c.getContext('2d');c.width=w+2*b;c.height=h+2*b;
+  if(b){x.fillStyle=V('bc');x.fillRect(0,0,c.width,c.height)}
+  x.filter=m=='bw'?'grayscale(1)':m=='blur'?`blur(${N('bl')}px)`:'none';x.drawImage(im,b,b,w,h);x.filter='none';
+  if(m=='text'){x.font=`bold ${N('ts')}px sans-serif`;x.fillStyle=V('tc');x.textAlign='center';x.fillText(V('tx'),w/2,V('tp')=='t'?N('ts')+10:V('tp')=='c'?h/2:h-20)}
+  if(m=='watermark'){x.save();x.globalAlpha=N('wo');x.translate(w/2,h/2);x.rotate(-Math.PI/6);const s=Math.max(20,w/12);x.font=`bold ${s}px sans-serif`;x.fillStyle='#fff';x.textAlign='center';for(let k=-4;k<=4;k++)x.fillText(V('tx'),0,k*s*2);x.restore()}
+  const f=V('fm'),kb=N('kb');let u=c.toDataURL(f,N('q')/100);
+  if(kb&&f!='image/png'){let lo=.05,hi=1;for(let k=0;k<9;k++){const md=(lo+hi)/2,t=c.toDataURL(f,md);if((t.length-23)*.75/1024<=kb){u=t;lo=md}else hi=md}}
+  const a=$('#dl');a.href=u;a.download='photo.'+f.split('/')[1].replace('jpeg','jpg');
+  O('Size: '+Math.round((u.length-23)*.75/1024)+' KB • '+c.width+'×'+c.height+' px')};
+ $('#tb').oninput=e=>{if(e.target.id=='f'){const fl=e.target.files[0];if(!fl)return;const i=new Image();i.onload=()=>{im=i;draw()};i.src=URL.createObjectURL(fl)}else draw()}}});
+
+const BF=[['name','Naam'],['dob','Janm tithi'],['tm','Janm samay'],['pl','Janm sthan'],['ht','Height'],['edu','Shiksha'],['job','Vyavsay / Naukri'],['inc','Salary'],['fa','Pita ka naam'],['mo','Mata ka naam'],['sib','Bhai-Behen'],['gt','Gotra / Jati'],['ad','Pata'],['ph','Contact No.']];
+
+const IMPL={
+'age-calc':{h:L('Janm tithi (DOB)','a','date','2000-01-01')+L('Is tarikh tak','b','date',today)+OUT,i(){live(()=>{const d=new Date(V('a')),t=new Date(V('b'));if(isNaN(d)||isNaN(t)||d>t)return O('Sahi date daalein');let y=t.getFullYear()-d.getFullYear(),m=t.getMonth()-d.getMonth(),dd=t.getDate()-d.getDate();if(dd<0){m--;dd+=new Date(t.getFullYear(),t.getMonth(),0).getDate()}if(m<0){y--;m+=12}const nb=new Date(t.getFullYear(),d.getMonth(),d.getDate());if(nb<t)nb.setFullYear(t.getFullYear()+1);O(R([['Umar',y+' saal, '+m+' mahine, '+dd+' din'],['Kul din',Math.floor((t-d)/864e5)],['Kul mahine',y*12+m],['Agla birthday',Math.ceil((nb-t)/864e5)+' din baad']]))})}},
+'percent-calc':{h:L('X','x','number','20')+L('Y','y','number','500')+OUT,i(){live(()=>{const x=N('x'),y=N('y');O(R([[x+'% of '+y,(x*y/100).toFixed(2)],[x+' is what % of '+y,y?(x/y*100).toFixed(2)+'%':'-'],[x+' se '+y+' tak badlav',x?((y-x)/x*100).toFixed(2)+'%':'-']]))})}},
+'gst-calc':gst(0),'gst-incl':gst(1),
+'loan-calc':{h:L('Loan Amount (₹)','p','number','500000')+L('Byaaj % (saalana)','r','number','9')+L('Samay (saal)','y','number','5')+OUT,i(){live(()=>{const p=N('p'),r=N('r')/1200,n=N('y')*12,e=r?p*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1):p/n;O(R([['Monthly EMI',inr(e)],['Total byaaj',inr(e*n-p)],['Total payment',inr(e*n)]]))})}},
+'salary-calc':{h:L('Basic (₹)','b','number','20000')+L('HRA (₹)','hr','number','8000')+L('Other allowance (₹)','ot','number','2000')+L('PF % (basic par)','pf','number','12')+L('Other katauti (₹)','dd','number','0')+OUT,i(){live(()=>{const g=N('b')+N('hr')+N('ot'),pf=N('b')*N('pf')/100,net=g-pf-N('dd');O(R([['Gross',inr(g)],['PF',inr(pf)],['Net in-hand',inr(net)],['Saalana net',inr(net*12)]]))})}},
+'cash-denom':{h:[500,200,100,50,20,10,5,2,1].map(d=>L('₹'+d+' ×','d'+d,'number','0')).join('')+OUT,i(){live(()=>{let t=0,c=0;[500,200,100,50,20,10,5,2,1].forEach(d=>{t+=d*N('d'+d);c+=N('d'+d)});O(R([['Total notes / coins',c],['Total amount',inr(t)]]))})}},
+'print-cost':{h:L('Pages','pg','number','10')+L('Copies','cp','number','1')+L('Rate per page (₹)','rt','number','2')+L('Binding / Lamination (₹)','bd','number','0')+OUT,i(){live(()=>{O(R([['Total pages',N('pg')*N('cp')],['Total kharcha',inr(N('pg')*N('cp')*N('rt')+N('bd'))]]))})}},
+calculator:{h:'<input id="ds" readonly><div class="keys">'+'7 8 9 / 4 5 6 * 1 2 3 - 0 . % + ( ) C ='.split(' ').map(k=>`<button class="k" data-k="${k}">${k}</button>`).join('')+'</div>',i(){const d=$('#ds');$('#tb').onclick=e=>{const k=e.target.dataset.k;if(!k)return;if(k=='C')d.value='';else if(k=='='){try{if(/^[\d+\-*/().% ]+$/.test(d.value))d.value=Function('return '+d.value.replace(/(\d+(\.\d+)?)%/g,'($1/100)'))()}catch{d.value='Error'}}else d.value+=k}}},
+'word-counter':{h:'<textarea id="t" rows="9" placeholder="Yahan text paste karein"></textarea>'+OUT,i(){live(()=>{const t=V('t').trim();O(R([['Words',t?t.split(/\s+/).length:0],['Characters',V('t').length],['Bina space ke',V('t').replace(/\s/g,'').length],['Sentences',(t.match(/[.!?।]+/g)||[]).length],['Lines',t?t.split('\n').length:0]]))})}},
+stopwatch:{h:'<div id="sw" class="big">00:00.00</div><button id="s1">Start</button><button id="s2">Stop</button><button id="s3">Reset</button>',i(){let t0=0,el=0;const sh=()=>{const x=el+(window.T?performance.now()-t0:0),w=$('#sw');if(w)w.textContent=String(Math.floor(x/6e4)).padStart(2,'0')+':'+((x%6e4)/1e3).toFixed(2).padStart(5,'0')};$('#s1').onclick=()=>{if(window.T)return;t0=performance.now();window.T=setInterval(sh,40)};$('#s2').onclick=()=>{if(!window.T)return;el+=performance.now()-t0;clearInterval(window.T);window.T=0;sh()};$('#s3').onclick=()=>{clearInterval(window.T);window.T=0;el=0;sh()}}},
+'my-ip':{h:OUT,i(){O('Loading...');fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>O(R([['Aapka IP',d.ip]]))).catch(()=>O('IP nahi mil paya'))}},
+sha256:{h:'<textarea id="t" rows="4" placeholder="Text / password"></textarea>'+OUT,i(){live(async()=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(V('t')));O(R([['SHA-256',[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')]]))})}},
+'meta-tag':{h:L('Page Title','t','text','My Website')+L('Description','d')+L('Keywords (comma se)','k')+'<textarea id="c" rows="8" readonly></textarea>',i(){live(()=>{$('#c').value=`<title>${V('t')}</title>\n<meta name="description" content="${V('d')}">\n<meta name="keywords" content="${V('k')}">\n<meta property="og:title" content="${V('t')}">\n<meta property="og:description" content="${V('d')}">\n<meta name="viewport" content="width=device-width, initial-scale=1">`})}},
+biodata:{h:BF.map(([k,n])=>L(n,'b_'+k)).join('')+L('Photo','b_img','file','','accept="image/*"')+'<button id="pb">Print / Save PDF</button>',i(){let ph='';$('#b_img').onchange=e=>{const r=new FileReader();r.onload=x=>ph=x.target.result;r.readAsDataURL(e.target.files[0])};$('#pb').onclick=()=>pr(`<h1 style="text-align:center;color:#b00">|| Shree Ganeshay Namah ||</h1><h2 style="text-align:center">BIODATA</h2>${ph?`<img src="${ph}" style="float:right;width:130px;height:160px;object-fit:cover;border:2px solid #b00;margin-left:12px">`:''}<table style="width:100%;border-collapse:collapse">${BF.filter(([k])=>V('b_'+k)).map(([k,n])=>`<tr><td style="border:1px solid #999;padding:8px;width:35%"><b>${n}</b></td><td style="border:1px solid #999;padding:8px">${V('b_'+k).replace(/</g,'&lt;')}</td></tr>`).join('')}</table>`)}},
+'text-pdf':{h:L('Heading (optional)','th')+'<textarea id="t" rows="12" placeholder="Application / letter yahan likhein"></textarea><button id="pb">Print / Save PDF</button>',i(){$('#pb').onclick=()=>pr(`<h2>${V('th').replace(/</g,'&lt;')}</h2><div style="white-space:pre-wrap;font-size:16px;line-height:1.7">${V('t').replace(/</g,'&lt;')}</div>`)}},
+'qr-code':{h:L('Text / Link','t','text','https://')+'<div id="q" style="margin:14px 0"></div><button id="dq">⬇ Download PNG</button>',i(){js('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js').then(()=>{live(()=>{$('#q').innerHTML='';new QRCode($('#q'),{text:V('t')||' ',width:256,height:256})});$('#dq').onclick=()=>{const a=document.createElement('a');a.href=$('#q canvas').toDataURL();a.download='qr.png';a.click()}})}},
+'jpg-to-pdf':{h:L('Images chunein (kai ek saath)','f','file','','accept="image/*" multiple')+'<button id="go">PDF banayein</button>'+OUT,i(){$('#go').onclick=async()=>{const fs=[...$('#f').files];if(!fs.length)return O('Pehle image chunein');O('Ban raha hai...');await js('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');const pdf=new jspdf.jsPDF('p','mm','a4');for(let k=0;k<fs.length;k++){const im=await new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=URL.createObjectURL(fs[k])}),c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);const s=Math.min(190/im.width,277/im.height),w=im.width*s,h=im.height*s;if(k)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',(210-w)/2,(297-h)/2,w,h)}pdf.save('images.pdf');O('PDF download ho gaya ✅')}}}
+};
+['resize','compress','convert','bw','blur','border','watermark'].forEach(m=>IMPL[m]=lab(m));IMPL['text-photo']=lab('text');
+
+const app=$('#app');
+function home(){
+ app.innerHTML='<input id="sq" class="sq" placeholder="🔍 Tool search karein..."><div id="gl"></div>';
+ const show=()=>{const q=$('#sq').value.toLowerCase();$('#gl').innerHTML=[...new Set(TL.map(t=>t[4]))].map(c=>{const l=TL.filter(t=>t[4]==c&&(t[2]+t[3]).toLowerCase().includes(q));return l.length?`<h3>${c}</h3><div class="grid">${l.map(t=>`<a class="tc" href="${t[5]||'#'+t[0]}"><span>${t[1]}</span><b>${t[2]}</b><small>${t[3]}</small><em>FREE</em></a>`).join('')}</div>`:''}).join('')};
+ $('#sq').oninput=show;show()}
+function route(){
+ clearInterval(window.T);window.T=0;
+ const id=location.hash.slice(1),t=TL.find(x=>x[0]==id&&!x[5]);
+ if(!t||!IMPL[id])return home();
+ app.innerHTML=`<a href="#" class="back">← Sab tools</a><div class="panel"><h2>${t[1]} ${t[2]}</h2><p>${t[3]} • 100% free</p><div id="tb"></div></div>`;
+ $('#tb').innerHTML=IMPL[id].h;IMPL[id].i&&IMPL[id].i();window.scrollTo(0,0)}
+addEventListener('hashchange',route);route();
+</script></body></html>
