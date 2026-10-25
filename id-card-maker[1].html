@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ID Card Maker Pro – 100 Cards</title>
+<style>
+body{font-family:'Segoe UI',Tahoma,Verdana,sans-serif;background:#eef2f3;margin:0;padding:20px;display:flex;flex-direction:column;align-items:center}
+h1{color:#333;margin:0 0 4px}.sub{color:#666;margin:0 0 18px;font-size:14px}
+.main{display:flex;flex-wrap:wrap;justify-content:center;gap:36px;width:100%;max-width:1100px}
+.controls{background:#fff;padding:22px;border-radius:15px;box-shadow:0 10px 25px rgba(0,0,0,.1);width:330px;max-width:100%;box-sizing:border-box}
+.controls label{font-weight:bold;font-size:13px;display:block;margin-top:10px}
+.controls input,.controls select,.controls button{width:100%;padding:11px;margin:6px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box;font-size:14px}
+.controls button{background:#007bff;color:#fff;border:none;font-weight:bold;cursor:pointer}
+.controls button:hover{opacity:.88}.controls .pr{background:#28a745}
+.nav{display:flex;gap:8px}.nav button{margin:6px 0;background:#555}
+.area{display:flex;flex-direction:column;align-items:center;min-height:460px;justify-content:center;gap:10px}
+.cnt{font-size:13px;color:#555}
+
+/* ---------- CARD BASE ---------- */
+.card{position:relative;overflow:hidden;background:#fff;box-shadow:0 15px 35px rgba(0,0,0,.25);color:#333}
+.card .hd{color:#fff}.card .ic{font-size:26px;display:block}
+.card .hd b{display:block;font-size:15px;letter-spacing:.5px}
+.card .hd i{display:block;font-size:11px;opacity:.9;font-style:normal;margin-top:2px}
+.card img{object-fit:cover;background:#eee;display:block}
+.card h2{margin:8px 0 4px;font-size:20px}
+.card .rl{font-size:13px;font-weight:600;color:var(--p)}
+.card dl{margin:8px 0 0;font-size:12px}
+.card dl div{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px dashed #0002}
+.card dl span{opacity:.7}
+.card .ft{position:absolute;left:0;right:0;bottom:0;padding:7px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888}
+.card .bar{height:16px;width:60%;margin:0 auto 4px;background:repeating-linear-gradient(90deg,currentColor 0 2px,transparent 2px 4px,currentColor 4px 5px,transparent 5px 8px)}
+
+/* L0 vertical */
+.L0{width:280px;height:450px;border-radius:16px}
+.L0 .hd{height:125px;padding:14px 10px;box-sizing:border-box;text-align:center;background:linear-gradient(135deg,var(--p),var(--s))}
+.L0.H1 .hd{clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%)}
+.L0.H2 .hd{border-radius:0 0 50% 50%/0 0 28% 28%}
+.L0.H0 .hd{background:var(--p)}
+.L0 img{width:104px;height:104px;border-radius:50%;border:4px solid #fff;margin:-38px auto 0;position:relative;box-shadow:0 3px 8px #0003}
+.L0 .bd{text-align:center;padding:2px 20px}
+
+/* L1 landscape */
+.L1{width:450px;height:260px;border-radius:12px}
+.L1 .hd{position:absolute;left:0;top:0;bottom:0;width:120px;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;background:linear-gradient(180deg,var(--p),var(--s))}
+.L1.H0 .hd{background:var(--p)}
+.L1.H1 .hd{clip-path:polygon(0 0,100% 0,82% 100%,0 100%);width:135px}
+.L1.H2 .hd{border-radius:0 60px 60px 0}
+.L1 .ic{font-size:34px;margin-bottom:6px}
+.L1 img{position:absolute;left:150px;top:24px;width:88px;height:106px;border-radius:10px;border:3px solid var(--p)}
+.L1 .bd{position:absolute;left:250px;right:12px;top:22px}
+.L1 .bd h2{font-size:17px;margin-top:0}
+.L1 .ft{padding-left:130px;text-align:left}.L1 .bar{margin:0 0 4px;width:45%}
+
+/* L2 lanyard badge */
+.L2{width:270px;height:440px;border-radius:22px;border:6px solid var(--p);box-sizing:border-box}
+.L2::before{content:"";position:absolute;top:8px;left:50%;width:60px;height:10px;margin-left:-30px;border-radius:6px;background:#0004;z-index:3}
+.L2 .hd{height:88px;padding-top:26px;box-sizing:border-box;text-align:center;background:var(--p)}
+.L2 .ic{display:inline;font-size:18px;margin-right:4px}.L2 .hd b{display:inline}
+.L2 img{width:118px;height:138px;border-radius:14px;margin:12px auto 0;border:3px solid var(--s)}
+.L2 .bd{text-align:center;padding:0 16px}
+.L2 .rl{background:var(--s);color:#fff;text-transform:uppercase;letter-spacing:1px;margin:0 -16px;padding:6px 8px}
+.L2 h2{font-size:21px}
+
+/* L3 dark pass */
+.L3{width:300px;height:430px;border-radius:18px;background:linear-gradient(160deg,#121212 35%,var(--p));color:#fff}
+.L3 .hd{padding:16px;display:flex;gap:10px;align-items:center}
+.L3 .hd div{text-align:left}.L3 .ic{font-size:30px}
+.L3 img{width:118px;height:118px;border-radius:18px;margin:6px auto 0;border:3px solid var(--s)}
+.L3 .bd{text-align:center;padding:0 22px}
+.L3 .rl{display:inline-block;background:var(--s);color:#fff;padding:3px 14px;border-radius:20px}
+.L3 dl{color:#ddd}.L3 .ft{color:#bbb}
+
+@media print{
+body *{visibility:hidden}.area,.area *{visibility:visible}
+.area{position:absolute;left:0;top:0;width:100%}
+.cnt{display:none}.card{box-shadow:none;border:1px solid #ccc}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<a href="/" style="align-self:flex-start;margin-bottom:10px;text-decoration:none;color:#007bff;font-weight:600">← Home</a>
+<h1>ID Card Maker Pro</h1>
+<p class="sub">100 अलग-अलग पहचान पत्र • हर कार्ड का अपना स्टाइल</p>
+
+<div class="main">
+ <div class="controls">
+  <label>1. कार्ड का प्रकार चुनें</label>
+  <select id="typeSel"></select>
+  <div class="nav"><button onclick="step(-1)">◀ पिछला</button><button onclick="step(1)">अगला ▶</button></div>
+
+  <label>2. विवरण भरें</label>
+  <input id="nameInp" placeholder="पूरा नाम (Full Name)">
+  <input id="roleInp" placeholder="पद / Designation (खाली = कार्ड का नाम)">
+  <input id="idInp" placeholder="ID नंबर">
+  <input id="orgInp" placeholder="संस्था का नाम (Organization)">
+  <input id="phoneInp" placeholder="फोन नंबर">
+  <input id="bloodInp" placeholder="ब्लड ग्रुप (जैसे B+)">
+  <input id="validInp" placeholder="वैधता / Valid Till (जैसे 31-12-2027)">
+
+  <label>3. फोटो अपलोड करें</label>
+  <input type="file" id="photoInp" accept="image/*">
+  <button class="pr" onclick="window.print()">Print / Save PDF</button>
+ </div>
+
+ <div class="area">
+  <div id="card"></div>
+  <div class="cnt" id="cnt"></div>
+ </div>
+</div>
+
+<script>
+// category: [नाम, base hue, [ "English|हिंदी|emoji", ... ]]
+const DATA=[
+["शिक्षा एवं शिक्षण संस्थान",215,["School Student|स्कूली छात्र|🎒","College / University Student|कॉलेज छात्र|🎓","School Teacher|शिक्षक|👩‍🏫","College Professor / Lecturer|प्रोफेसर|📚","Principal / Headmaster|प्रधानाचार्य|🏫","School Bus Driver|बस ड्राइवर|🚌","School Librarian|पुस्तकालय अध्यक्ष|📖","Coaching Institute Student|कोचिंग छात्र|✏️","Examination Candidate|परीक्षार्थी|📝","Hostel Resident|छात्रावास निवासी|🏠"]],
+["चिकित्सा एवं स्वास्थ्य सेवा",165,["Hospital Doctor|डॉक्टर|🩺","Staff Nurse|नर्स|💉","Patient Registration|मरीज|🏥","Lab Technician|लैब तकनीशियन|🔬","Pharmacist|फार्मासिस्ट|💊","Radiologist / X-Ray Technician|रेडियोलॉजिस्ट|🩻","Ambulance Driver|एम्बुलेंस चालक|🚑","Hospital Visitor / Attendant|मुलाकाती पास|🧑‍🤝‍🧑","Blood Donor|रक्तदाता|🩸","Hospital Administration Staff|अस्पताल प्रशासन|🗂️"]],
+["कॉर्पोरेट, कार्यालय एवं आईटी",260,["Corporate Employee|कंपनी कर्मचारी|🏢","Company Director / CEO|निदेशक / सीईओ|👔","IT Software Engineer|सॉफ्टवेयर इंजीनियर|💻","Human Resources (HR)|एचआर अधिकारी|🤝","Intern / Trainee|इंटर्न / प्रशिक्षु|🌱","Office Visitor / Guest|अतिथि पास|🎫","Temporary Contractor|ठेका कर्मचारी|📄","Freelancer / Consultant|परामर्शदाता|🧠","Sales Representative|सेल्स प्रतिनिधि|📈","Housekeeping Staff|सफाई स्टाफ|🧹"]],
+["बैंकिंग, वित्त एवं बीमा",38,["Bank Manager|बैंक प्रबंधक|🏦","Bank Cashier / Teller|कैशियर|💵","Bank Clerk|बैंक क्लर्क|🗃️","Bank Security Guard|बैंक सुरक्षा गार्ड|🛡️","Insurance Agent|बीमा एजेंट|☂️","Bank Loan Officer|ऋण अधिकारी|💰","Financial Advisor|वित्तीय सलाहकार|📊","Chartered Accountant (CA)|सीए पहचान पत्र|🧾","Bank Customer Privilege|बैंक ग्राहक कार्ड|💳","Recovery Agent|रिकवरी एजेंट|📞"]],
+["इवेंट्स, मनोरंजन एवं मीडिया",320,["Event Organizer|आयोजक|🎪","VIP Event Pass|वीआईपी पास|⭐","Event Volunteer|स्वयंसेवक|🙋","Press / Media / Journalist|पत्रकार / प्रेस|🎙️","Event Photographer / Videographer|फोटोग्राफर|📷","Backstage / Crew Access|बैकस्टेज क्रू|🎬","Guest Speaker / Presenter|वक्ता पास|🗣️","Event Security Bouncer|बाउंसर / सुरक्षा|🕶️","Exhibition Exhibitor|प्रदर्शक पास|🏬","Concert / Festival Delegate|डेलिगेट पास|🎶"]],
+["सुरक्षा, पुलिस एवं आपातकालीन सेवाएं",8,["Police Officer|पुलिस अधिकारी|👮","Private Security Guard|निजी सुरक्षा गार्ड|💂","Firefighter|दमकल कर्मी|🚒","Traffic Police|ट्रैफिक पुलिस|🚦","Home Guard|होमगार्ड|🪖","Defense / Army Personnel|सेना जवान|🎖️","Bodyguard / PSO|बॉडीगार्ड|🦺","Disaster Management Volunteer|आपदा प्रबंधन दल|⛑️","Intelligence / Detective Agent|जासूस / गुप्तचर|🕵️","Forest Ranger / Wildlife Guard|वन रक्षक|🌲"]],
+["परिवहन, यात्रा एवं लॉजिस्टिक्स",190,["Airline Pilot|विमान पायलट|✈️","Air Hostess / Cabin Crew|केबिन क्रू|🛫","Airport Ground Staff|एयरपोर्ट स्टाफ|🧳","Railway Ticket Examiner (TTE)|टीटीई|🎟️","Train Loco Pilot|ट्रेन चालक|🚆","Metro Rail Smart Pass|मेट्रो पास|🚇","Bus Conductor|बस कंडक्टर|🚏","Courier / Delivery Partner|डिलीवरी बॉय|📦","Commercial Vehicle Driver|ट्रक / टैक्सी चालक|🚛","Ship Crew / Marine Officer|नाविक / जहाज कर्मी|🚢"]],
+["सरकारी, कानूनी एवं नागरिक सेवाएं",280,["Civil Services Officer|प्रशासनिक अधिकारी|🏛️","Court Advocate|वकील|⚖️","Bar Council Member|बार काउंसिल सदस्य|👨‍⚖️","Court Clerk / Typist|कोर्ट पेशकार / क्लर्क|⌨️","Gram Panchayat Mukhiya / Pradhan|मुखिया / प्रधान|🌾","Ward Member / Councilor|वार्ड सदस्य / पार्षद|🗳️","Postman|डाकिया|📮","Municipal Field Officer|नगर निगम कर्मचारी|🏙️","Election Polling Agent|मतदान एजेंट|📋","Meter Reader|मीटर रीडर|💡"]],
+["खेल, फिटनेस एवं क्लब",95,["Gym Member|जिम सदस्य|🏋️","Gym Trainer / Fitness Coach|जिम ट्रेनर|💪","Sports Club Player|खिलाड़ी|⚽","Referee / Umpire|अंपायर / रेफरी|🏁","Swimming Pool Member|स्वीमिंग पूल सदस्य|🏊","Golf Club Elite Member|गोल्फ क्लब सदस्य|⛳","Yoga Center Practitioner|योग प्रशिक्षु|🧘","Martial Arts / Karate Student|मार्शल आर्ट्स छात्र|🥋","Stadium VIP Box Pass|स्टेडियम पास|🏟️","Tournament Official|टूर्नामेंट अधिकारी|🏆"]],
+["होटल, उद्योग एवं सामाजिक संस्थाएं",22,["Hotel General Manager|होटल मैनेजर|🏨","Hotel Receptionist|रिसेप्शनिस्ट|🛎️","Hotel Executive Chef|शेफ / बावर्ची|👨‍🍳","Hotel Waiter / Service Staff|वेटर / सर्विस स्टाफ|🍽️","Factory Machine Operator|फैक्ट्री ऑपरेटर|🏭","Site Engineer / Safety Officer|साइट इंजीनियर|👷","NGO Social Worker|एनजीओ कार्यकर्ता|🤲","Trade Union Member|मजदूर संघ सदस्य|✊","Retail Store Staff|सुपरमार्केट / मॉल स्टाफ|🛒","Senior Citizen Community|वरिष्ठ नागरिक|👴"]]
+];
+
+// flat list
+const T=[];
+DATA.forEach((c,ci)=>c[2].forEach((s,i)=>{const [en,hi,ic]=s.split('|');T.push({en,hi,ic:ic||'🪪',ci,i,cat:c[0],hue:(c[1]+i*13)%360})}));
+
+const $=id=>document.getElementById(id);
+let cur=0,photo=null;
+const sel=$('typeSel');
+DATA.forEach((c,ci)=>{const g=document.createElement('optgroup');g.label=(ci+1)+'. '+c[0];
+ T.forEach((t,k)=>{if(t.ci===ci){const o=document.createElement('option');o.value=k;o.textContent=(k+1)+'. '+t.en+' ('+t.hi+')';g.appendChild(o)}});sel.appendChild(g)});
+sel.onchange=()=>{cur=+sel.value;render()};
+function step(d){cur=(cur+d+T.length)%T.length;sel.value=cur;render()}
+
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const PH="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110 110'%3E%3Crect width='110' height='110' fill='%23e0e0e0'/%3E%3Ccircle cx='55' cy='42' r='20' fill='%23bdbdbd'/%3E%3Cellipse cx='55' cy='98' rx='34' ry='28' fill='%23bdbdbd'/%3E%3C/svg%3E";
+
+function render(){
+ const t=T[cur];
+ const L=(cur+t.ci)%4, H=Math.floor(cur/4)%3;   // layout + header style har card ke liye alag
+ const p=`hsl(${t.hue} 62% 36%)`, s=`hsl(${(t.hue+28)%360} 72% 50%)`;
+ const v=id=>esc($(id).value.trim());
+ const row=(k,val,d)=>`<div><span>${k}</span><b>${val||d}</b></div>`;
+ $('card').innerHTML=`
+ <div class="card L${L} H${H}" style="--p:${p};--s:${s}">
+  <div class="hd"><span class="ic">${t.ic}</span><div><b>${v('orgInp')||'ORGANIZATION'}</b><i>${esc(t.en)}</i></div></div>
+  <img src="${photo||PH}" alt="Photo">
+  <div class="bd">
+   <h2>${v('nameInp')||'NAME HERE'}</h2>
+   <div class="rl">${v('roleInp')||esc(t.en)}</div>
+   <dl>${row('ID No',v('idInp'),'0000')}${row('Phone',v('phoneInp'),'—')}${row('Blood',v('bloodInp'),'—')}${row('Valid',v('validInp'),'—')}</dl>
+  </div>
+  <div class="ft"><div class="bar"></div>${esc(t.hi)} • Official ID</div>
+ </div>`;
+ $('cnt').textContent=`कार्ड ${cur+1} / ${T.length} — ${t.cat}`;
+}
+['nameInp','roleInp','idInp','orgInp','phoneInp','bloodInp','validInp'].forEach(i=>$(i).addEventListener('input',render));
+$('photoInp').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();r.onload=x=>{photo=x.target.result;render()};r.readAsDataURL(f)});
+render();
+</script>
+</body>
+</html>
